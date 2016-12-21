@@ -1,0 +1,48 @@
+- name: ensure binary is present
+  unarchive:
+    src: "{{download_url}}"
+    dest: "{{install_dir}}"
+    remote_src: true
+  args:
+    creates: "{{install_dir}}/{{name}}"
+
+- name: ensure user exists
+  user:
+    name: "{{user}}"
+
+- name: ensure needed directories exist
+  file:
+    path: "{{item}}"
+    owner: "{{user}}"
+    group: "{{group}}"
+    state: directory
+  with_items:
+    - "{{data_dir}}"
+    - "{{config_dir}}"
+
+- name: ensure configuration is in place
+  template:
+    src: "{{agent_mode}}.hcl.j2"
+    dest: "{{config_dir}}/agent.hcl"
+    owner: "{{user}}"
+    group: "{{group}}"
+
+- name: ensure service has been installed
+  template:
+    src: systemd.service.j2
+    dest: /etc/systemd/system/{{name}}.service
+
+- name: ensure service has been enabled/is running
+  systemd:
+    name: "{{name}}"
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: ensure NOMAD_ADDR is set so nomad cli works without -address flag
+  lineinfile:
+    insertbefore: BOF
+    state: present
+    line: NOMAD_ADDR=http://{{inventory_hostname}}:4646
+    dest: /etc/environment
+    create: yes

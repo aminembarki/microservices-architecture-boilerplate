@@ -1,0 +1,61 @@
+- name: ensure ipv4 traffic can be forwarded
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+
+- name: ensure firewall doesn't log
+  lineinfile:
+    dest: /etc/ufw/ufw.conf
+    regexp: "^LOGLEVEL"
+    line: "LOGLEVEL=off"
+  notify: reload ufw
+
+- name: ensure firewall is reset
+  ufw:
+    state: reset
+  notify: reload ufw
+
+- name: ensure firewall is enabled and denies all by default
+  ufw:
+    state: enabled
+    policy: deny
+    direction: incoming
+  notify: reload ufw
+
+- name: ensure firewall allows ssh
+  ufw:
+    rule: allow
+    to_port: 22
+    proto: tcp
+  notify: reload ufw
+
+- name: ensure firewall allows openvpn
+  ufw:
+    rule: allow
+    to_port: "{{ port }}"
+    proto: tcp
+  notify: reload ufw
+
+- name: ensure firewall allows requests from vpn clients
+  ufw:
+    rule: allow
+    from_ip: "{{ cidr }}"
+  notify: reload ufw
+
+- name: ensure firewall allows forwarding
+  lineinfile:
+    dest: /etc/default/ufw
+    regexp: DEFAULT_FORWARD_POLICY=
+    line: DEFAULT_FORWARD_POLICY="ACCEPT"
+  notify: reload ufw
+
+- name: ensure firewall forwards requests from vpn clients to internal network
+  blockinfile:
+    dest: /etc/ufw/before.rules
+    insertbefore: \*filter
+    block: |
+      *nat
+      :POSTROUTING ACCEPT [0:0]
+      -A POSTROUTING -s {{cidr}} -o eth0 -j MASQUERADE
+      COMMIT
+  notify: reload ufw

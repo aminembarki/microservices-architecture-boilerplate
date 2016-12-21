@@ -1,0 +1,18 @@
+{
+  "service": {
+    "id": "vpn",
+    "name": "openvpn",
+    "checks": [
+      {
+        "tcp": "localhost:{{port}}",
+        "interval": "10s",
+        "timeout": "1s"
+      },
+      {
+        "tcp": "localhost:22",
+        "interval": "10s",
+        "timeout": "1s"
+      }
+    ]
+  }
+}

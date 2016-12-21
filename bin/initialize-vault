@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ip=$(terraform output -json management_cluster_ips | jq -r '.value[0]')
+ssh ubuntu@$ip \
+  VAULT_ADDR=http://$ip:8200 vault init

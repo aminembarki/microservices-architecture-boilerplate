@@ -1,0 +1,11 @@
+- name: ensure system dependencies are installed and up to date
+  raw: apt-get update && apt-get install -y python unzip unattended-upgrades && apt-get -y upgrade
+
+- name: ensure unattended upgrades are running
+  copy:
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Download-Upgradeable-Packages "1";
+      APT::Periodic::AutocleanInterval "7";
+      APT::Periodic::Unattended-Upgrade "1";
+    dest: /etc/apt/apt.conf.d/10periodic

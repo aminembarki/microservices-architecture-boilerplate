@@ -1,0 +1,12 @@
+name: vault
+version: 0.6.4
+download_url: https://releases.hashicorp.com/{{name}}/{{version}}/{{name}}_{{version}}_linux_amd64.zip
+
+user: "{{name}}"
+group: "{{name}}"
+install_dir: /usr/local/bin
+config_dir: /etc/{{name}}.d
+
+protocol: http
+listen: "0.0.0.0:8200"
+api_baseurl: "{{protocol}}://{{listen}}/v1"

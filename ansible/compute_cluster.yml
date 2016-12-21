@@ -1,0 +1,16 @@
+- hosts: all
+  gather_facts: false
+  become: yes
+  become_method: sudo
+  roles:
+    - {role: base, tags: base}
+    - {role: dnsmasq, tags: dnsmasq}
+    - {role: hostname, tags: hostname, hostname: "compute-cluster-{{groups.all.index(inventory_hostname)}}"}
+    - {role: consul, tags: consul, agent_mode: client}
+    - {role: nomad, tags: nomad, agent_mode: client}
+    - {role: docker, tags: docker}
+  tasks:
+    - name: restart nomad so it sees docker has been installed
+      systemd:
+        name: nomad
+        state: restarted

@@ -1,0 +1,14 @@
+[Unit]
+Description={{name}} daemon
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User={{user}}
+Group={{group}}
+Restart=always
+ExecStart={{install_dir}}/{{name}} agent -config-dir="{{config_dir}}"
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

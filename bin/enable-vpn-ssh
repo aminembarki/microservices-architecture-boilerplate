@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo Enabling port 22 on VPN...
+aws ec2 authorize-security-group-ingress \
+  --group-id $(terraform output vpn_security_group_id) \
+  --protocol tcp \
+  --port 22 \
+  --cidr 0.0.0.0/0 \
+  --profile $(terraform output name)
+echo Done.

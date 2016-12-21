@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo Unsealing Vault Leader...
+ip=$(terraform output -json management_cluster_ips | jq -r '.value[0]')
+ssh ubuntu@$ip VAULT_ADDR=http://$ip:8200 vault unseal $1
+
+echo Unsealing Vault Standby One...
+ip=$(terraform output -json management_cluster_ips | jq -r '.value[1]')
+ssh ubuntu@$ip VAULT_ADDR=http://$ip:8200 vault unseal $1
+
+echo Unsealing Vault Standby Two...
+ip=$(terraform output -json management_cluster_ips | jq -r '.value[2]')
+ssh ubuntu@$ip VAULT_ADDR=http://$ip:8200 vault unseal $1

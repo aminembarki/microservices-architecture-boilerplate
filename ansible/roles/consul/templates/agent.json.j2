@@ -1,0 +1,20 @@
+{
+  "server": {{'true' if agent_mode == 'server' else 'false'}},
+  "datacenter": "{{datacenter}}",
+  "data_dir": "{{data_dir}}",
+  "bind_addr": "{{ansible_eth0.ipv4.address}}",
+  "enable_syslog": true,
+  "retry_join": [
+{% for ip in hosts if ip != ansible_eth0.ipv4.address %}
+    "{{ip}}"{% if not loop.last %},{% endif %}
+
+{% endfor %}
+  ],
+  "client_addr": "0.0.0.0",
+  "ui": true
+{%- if agent_mode == 'server' %}
+,
+  "bootstrap_expect": {{cluster_size}},
+  "rejoin_after_leave": true
+{% endif %}
+}

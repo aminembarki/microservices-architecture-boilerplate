@@ -1,0 +1,10 @@
+datacenter = "{{datacenter}}"
+data_dir = "{{data_dir}}"
+bind_addr = "{{inventory_hostname}}"
+enable_syslog = true
+client {
+  enabled = true
+}
+consul {
+  address = "{{inventory_hostname}}:8500"
+}

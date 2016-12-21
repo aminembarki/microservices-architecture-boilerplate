@@ -1,0 +1,30 @@
+- name: ensure binary is present
+  apt:
+    name: dnsmasq
+    state: present
+    update_cache: true
+
+- name: ensure needed directories exist
+  file:
+    dest: /etc/dnsmasq.d
+    state: directory
+
+- name: ensure .consul domains delegate to consul
+  copy:
+    content: 'server=/consul./127.0.0.1#8600'
+    dest: /etc/dnsmasq.d/10-consul
+
+- name: ensure service has been enabled/is running
+  systemd:
+    name: dnsmasq
+    enabled: true
+    state: restarted
+    daemon_reload: true
+
+- name: ensure dnsmasq is used for resolving dns
+  lineinfile:
+    insertbefore: BOF
+    state: present
+    line: nameserver 127.0.0.1
+    dest: /etc/resolvconf/resolv.conf.d/consul
+    create: yes

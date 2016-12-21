@@ -1,0 +1,2 @@
+#!/bin/bash
+ssh ubuntu@$(terraform output vpn_public_ip) "cat /etc/openvpn/clients/admin/*.ovpn"

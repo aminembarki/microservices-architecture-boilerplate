@@ -1,0 +1,9 @@
+- name: ensure hostname is configured
+  hostname:
+    name: "{{hostname}}"
+
+- name: ensure there is a loopback reference to hostname
+  lineinfile:
+    dest: /etc/hosts
+    state: present
+    line: "127.0.0.1 {{hostname}}"

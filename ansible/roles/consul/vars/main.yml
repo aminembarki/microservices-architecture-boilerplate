@@ -1,0 +1,13 @@
+name: consul
+version: 0.7.1
+download_url: https://releases.hashicorp.com/{{name}}/{{version}}/{{name}}_{{version}}_linux_amd64.zip
+
+user: "{{name}}"
+group: "{{name}}"
+install_dir: /usr/local/bin
+data_dir: /mnt/{{name}}
+config_dir: /etc/{{name}}.d
+
+# defined
+join_hosts: []
+cluster_size: "{{hosts|length}}"

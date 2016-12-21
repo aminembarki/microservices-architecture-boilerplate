@@ -1,0 +1,11 @@
+- hosts: all
+  gather_facts: false
+  become: yes
+  become_method: sudo
+  roles:
+    - {role: base, tags: base}
+    - {role: dnsmasq, tags: dnsmasq}
+    - {role: hostname, tags: hostname, hostname: "management-cluster-{{groups.all.index(inventory_hostname)}}"}
+    - {role: consul, tags: consul, agent_mode: server}
+    - {role: nomad, tags: nomad, agent_mode: server}
+    - {role: vault, tags: vault}

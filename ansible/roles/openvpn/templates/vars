@@ -1,0 +1,20 @@
+set_var EASYRSA "$PWD"
+set_var EASYRSA_OPENSSL "openssl"
+set_var EASYRSA_PKI "$EASYRSA/pki"
+set_var EASYRSA_DN "cn_only"
+set_var EASYRSA_REQ_CN "Going Slowly, LLC"
+set_var EASYRSA_REQ_COUNTRY "{{key_country}}"
+set_var EASYRSA_REQ_PROVINCE "{{key_province}}"
+set_var EASYRSA_REQ_CITY "{{key_city}}"
+set_var EASYRSA_REQ_ORG "{{key_org}}"
+set_var EASYRSA_REQ_EMAIL "{{key_email}}"
+set_var EASYRSA_REQ_OU "{{key_ou}}"
+set_var EASYRSA_KEY_SIZE {{key_size}}
+set_var EASYRSA_ALGO rsa
+set_var EASYRSA_CA_EXPIRE 3650
+set_var EASYRSA_CERT_EXPIRE 3650
+set_var EASYRSA_CRL_DAYS 180
+set_var EASYRSA_NS_SUPPORT "no"
+set_var EASYRSA_TEMP_FILE "$EASYRSA_PKI/extensions.temp"
+set_var EASYRSA_DIGEST "sha512"
+set_var EASYRSA_BATCH "true"

@@ -1,0 +1,9 @@
+backend "consul" {
+  path = "vault/"
+  datacenter = "{{datacenter}}"
+}
+
+listener "tcp" {
+  address = "{{listen}}"
+  tls_disable = 1
+}

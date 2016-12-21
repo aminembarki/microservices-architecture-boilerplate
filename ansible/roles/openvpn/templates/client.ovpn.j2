@@ -1,0 +1,37 @@
+client
+remote {{inventory_hostname}} {{port}}
+
+dev tun
+proto tcp
+cipher aes-256-cbc
+auth sha512
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+remote-cert-tls server
+comp-lzo
+key-direction 1
+verb 3
+route {{inventory_hostname}} 255.255.255.255 net_gateway
+
+# Uncomment if on Linux and DNS doesn't resolve when on VPN
+# script-security 2
+# up /etc/openvpn/update-resolv-conf
+# down /etc/openvpn/update-resolv-conf
+
+<ca>
+{{ca_contents.stdout}}
+</ca>
+
+<cert>
+{{item[1].stdout}}
+</cert>
+
+<key>
+{{item[2].stdout}}
+</key>
+
+<tls-auth>
+{{hmac_key_contents.stdout}}
+</tls-auth>
