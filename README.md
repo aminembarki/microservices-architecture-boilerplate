@@ -20,21 +20,23 @@
 
 ## To Do
 - Get SSL communication going for Vault and Consul.
-- Get DNS resolution for .consul working over VPN
 - Get OpenVPN using Vault for PKI (aka ditch easy-rsa)
 - Test Nomad/Vault integration on jobs
 - Ditch Ansible for shell scripts integrated with Terraform?
 - Hook up Fabio for a load balancer
+- Lock down consul a bit:
+  - https://www.mauras.ch/securing-consul.html
 
 ## Tests
 - Confirm Consul cluster is up by running `consul members` on any of the
-  management cluster nodes.
-- Confirm Consul is running w/ http://<any-management-cluster-ip>:8500
-- Confirm Consul/Vault integration is working by sshing to any management
-  cluster node and running `dig vault.service.consul`.
+  management cluster nodes
+- Confirm Consul is being used for DNS locally while connected to VPN
+  with `dig consul.service.consul`
+- Confirm Consul UI is up: http://consul.service.consul:8500
+- Confirm Consul/Vault integration: `dig vault.service.consul`.
 - Incrementally take out Vault instances w/ `systemctl stop vault` on
   any of the management cluster nodes and watch Consul fail over by
-  running `dig active.vault.service.consul` (restarting service will require
+  running `dig vault.service.consul` (restarting service will require
   unsealing again).
 - Test running job on nomad:
   1. scp services/proxy/job.nomad to any management cluster machine

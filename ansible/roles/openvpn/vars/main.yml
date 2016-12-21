@@ -13,12 +13,6 @@ cidr:
 # with -e
 static_routes: []
 
-# use aws provided nameservers so private dns resolves
-# while connected to the vpn
-nameservers:
-  - 10.100.0.2
-  - 10.100.20.2
-
 users:
   - name: admin
     real_name: VPN Admin

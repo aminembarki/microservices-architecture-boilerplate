@@ -73,6 +73,7 @@ module "management_cluster" {
   key_name = "${var.key_name}"
   vpc_id = "${module.vpc.id}"
   vpc_cidr = "${var.vpc_cidr}"
+  vpn_cidr = "${var.vpn_cidr}"
   subnet_ids = "${module.subnet.ids}"
   size = 3
   policy_arn = "${aws_iam_policy.vault.arn}"
@@ -87,8 +88,9 @@ module "compute_cluster" {
   ami = "${var.ami}"
   instance_type = "t2.micro"
   key_name = "${var.key_name}"
-  vpc_id  = "${module.vpc.id}"
-  vpc_cidr  = "${var.vpc_cidr}"
+  vpc_id = "${module.vpc.id}"
+  vpc_cidr = "${var.vpc_cidr}"
+  vpn_cidr = "${var.vpn_cidr}"
   subnet_ids = "${module.subnet.ids}"
   size = 1
 }

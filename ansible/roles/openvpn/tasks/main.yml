@@ -145,7 +145,7 @@
     - "{{ client_keys.results }}"
   when: "{{ item.0.state == 'present' }}"
   no_log: true
-
+  
 - name: ensure eth0 ip is known
   setup:
 

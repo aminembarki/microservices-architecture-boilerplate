@@ -6,6 +6,7 @@
 variable "name" { }
 variable "vpc_id" { }
 variable "vpc_cidr" { }
+variable "vpn_cidr" { }
 variable "ami" { }
 variable "instance_type" { }
 variable "key_name" { }
@@ -41,7 +42,7 @@ resource "aws_security_group" "main" {
   tags {
     Name = "${var.name}"
   }
-  // allow outbound internet access
+  // allow all outbound internet access
   egress {
     from_port = 0
     to_port = 0
@@ -50,13 +51,14 @@ resource "aws_security_group" "main" {
       "0.0.0.0/0"
     ]
   }
-  // allow inbound communication on all ports within the vpc only
+  // allow all inbound communication within the vpn/vpc
   ingress {
     from_port = 0
     to_port = 0
     protocol = -1
     cidr_blocks = [
-      "${var.vpc_cidr}"
+      "${var.vpc_cidr}",
+      "${var.vpn_cidr}"
     ]
   }
   lifecycle {

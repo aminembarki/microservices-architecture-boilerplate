@@ -29,6 +29,13 @@
     proto: tcp
   notify: reload ufw
 
+- name: ensure firewall allows dns
+  ufw:
+    rule: allow
+    to_port: 53
+    proto: tcp
+  notify: reload ufw
+
 - name: ensure firewall allows openvpn
   ufw:
     rule: allow

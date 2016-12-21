@@ -11,8 +11,17 @@
 
 - name: ensure .consul domains delegate to consul
   copy:
-    content: 'server=/consul./127.0.0.1#8600'
-    dest: /etc/dnsmasq.d/10-consul
+    content: |
+      server=/consul./127.0.0.1#8600
+      listen-address=127.0.0.1
+      bind-interfaces
+    dest: /etc/dnsmasq.d/consul
+
+- name: ensure requests over eth0 are allowed
+  copy:
+    content: interface=eth0
+    dest: /etc/dnsmasq.d/interface
+  when: "{{listen_on_eth0 is defined}}"
 
 - name: ensure service has been enabled/is running
   systemd:
