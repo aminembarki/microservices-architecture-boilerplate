@@ -3,6 +3,7 @@
 ansible-playbook -u ubuntu \
   -e cidr=`terraform output vpn_cidr` \
   -e fqdn=vpn.`terraform output domain` \
+  -e "{\"hosts\":$(terraform output -json management_cluster_ips | jq -c '.value')}" \
   -e "{\"static_routes\":[\"`terraform output vpc_cidr`\"]}" \
   -i `terraform output vpn_public_ip`, \
   ansible/vpn.yml

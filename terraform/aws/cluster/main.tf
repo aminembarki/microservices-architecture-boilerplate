@@ -1,7 +1,6 @@
 ##
-# This modules manages a cluster providing highly available
-# instances of Consul, Vault and Nomad for usaged across the
-# entire infrastructure.
+# This modules manages a compute cluster. One instance will be
+# spun up in every provided subnet.
 #
 variable "name" { }
 variable "vpc_id" { }
@@ -10,9 +9,11 @@ variable "vpn_cidr" { }
 variable "ami" { }
 variable "instance_type" { }
 variable "key_name" { }
-variable "subnet_ids" { type = "list" }
 variable "size" { }
+variable "subnet_ids" { type = "list" }
+variable "subnet_cidrs" { type = "list" default = [] }
 variable "policy_arn" { default = "" }
+variable "host_number" { default = 0 }
 
 output "ips" {
   value = ["${aws_instance.host.*.private_ip}"]
@@ -24,6 +25,7 @@ resource "aws_instance" "host" {
   instance_type = "${var.instance_type}"
   key_name = "${var.key_name}"
   subnet_id = "${element(var.subnet_ids, count.index)}"
+  private_ip = "${var.host_number != 0 ? cidrhost(element(var.subnet_cidrs, count.index), var.host_number) : ""}"
   vpc_security_group_ids = [
     "${aws_security_group.main.id}",
   ]

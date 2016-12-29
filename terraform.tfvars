@@ -32,3 +32,9 @@ subnet_cidrs = [
   "10.100.1.0/24",
   "10.100.2.0/24"
 ]
+
+# This defines a static host number to use for management
+# cluster instance private ips. For the subnets above, this
+# would yield instances running at 10.100.0.10, 10.100.1.10
+# and 10.100.2.10
+management_cluster_host_number = 10

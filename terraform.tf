@@ -7,6 +7,7 @@ variable "azs" { type = "list" }
 variable "key_name" { }
 variable "subnet_cidrs" { type = "list" }
 variable "vpn_cidr" { }
+variable "management_cluster_host_number" { }
 
 output "name" { value = "${var.name}" }
 output "domain" { value = "${var.domain}" }
@@ -75,8 +76,10 @@ module "management_cluster" {
   vpc_cidr = "${var.vpc_cidr}"
   vpn_cidr = "${var.vpn_cidr}"
   subnet_ids = "${module.subnet.ids}"
-  size = 3
+  subnet_cidrs = "${var.subnet_cidrs}"
+  host_number = "${var.management_cluster_host_number}"
   policy_arn = "${aws_iam_policy.vault.arn}"
+  size = "${length(var.subnet_cidrs)}"
 }
 
 ##
@@ -92,7 +95,8 @@ module "compute_cluster" {
   vpc_cidr = "${var.vpc_cidr}"
   vpn_cidr = "${var.vpn_cidr}"
   subnet_ids = "${module.subnet.ids}"
-  size = 1
+  subnet_cidrs = "${var.subnet_cidrs}"
+  size = "${length(var.subnet_cidrs)}"
 }
 
 ##
