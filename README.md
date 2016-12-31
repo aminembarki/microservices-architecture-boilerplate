@@ -15,15 +15,17 @@
 9. Connect to VPN (using `vpn.ovpn`).
 10. Provision Management Cluster: `bin/provision-management-cluster`
 11. Provision Compute Cluster: `bin/provision-compute-cluster`
-12. Initialize Vault: `bin/initialize-vault` (save output securely)
-13. Unseal Vault (3x): `bin/unseal-vault <key>`
+12. Provision Load Balancer: `bin/provision-load-balancer`
+13. Initialize Vault: `bin/initialize-vault` (save output securely)
+14. Unseal Vault (3x): `bin/unseal-vault <key>`
 
 ## To Do
+- Confirm Fabio working for SSL
+- Hook up fabio certificate store for SSL termination
 - Get SSL communication going for Vault and Consul.
 - Get OpenVPN using Vault for PKI (aka ditch easy-rsa)
 - Test Nomad/Vault integration on jobs
 - Ditch Ansible for shell scripts integrated with Terraform?
-- Hook up Fabio for a load balancer
 - Lock down consul a bit:
   - https://www.mauras.ch/securing-consul.html
 
@@ -39,11 +41,19 @@
   running `dig vault.service.consul` (restarting service will require
   unsealing again).
 - Test running job on nomad:
-  1. scp services/proxy/job.nomad to any management cluster machine
-  2. ssh to management cluster and run `nomad run job.nomad`
-  3. get ip/port of service by running `dig SRV test-proxy-proxy.service.consul`
-  5. browse to running service using ip/port from commands above
-  6. check consul web ui--service should be there
+  1. `scp services/proxy/job.nomad ubuntu@nomad.service.consul:~/`
+  2. `ssh ubuntu@nomad.service.consul "nomad run job.nomad"`
+  3. check http://consul.service.consul:8500 for new service
+  3. check http://fabio.service.consul:9998 to see the routing table updated
+  4. check that fabio is forwarding with the following:
+     ```
+     telnet fabio.service.consul 80
+     GET / HTTP/1.1
+     HOST: gs.loc
+     <hit enter>
+     ctrl+]
+     quit
+     ```
 
 [AWSCLI]: http://docs.aws.amazon.com/cli/latest/userguide/installing.html
 [Terraform]: https://www.terraform.io/downloads.html

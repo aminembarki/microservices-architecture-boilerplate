@@ -19,6 +19,9 @@ vpn_cidr = "10.110.0.0/16"
 # Default AMI (Ubuntu 16.04)
 ami = "ami-40d28157"
 
+# Default instance type
+instance_type = "t2.micro"
+
 # This is all of the availability zones we will create subnets for
 azs = [
   "us-east-1a",

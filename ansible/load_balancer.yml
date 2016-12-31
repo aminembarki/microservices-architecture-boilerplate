@@ -1,0 +1,10 @@
+- hosts: all
+  gather_facts: false
+  become: yes
+  become_method: sudo
+  roles:
+    - {role: base, tags: base}
+    - {role: dnsmasq, tags: dnsmasq}
+    - {role: hostname, tags: hostname, hostname: "load-balancer"}
+    - {role: consul, tags: consul, agent_mode: client}
+    - {role: fabio, tags: fabio}

@@ -9,13 +9,13 @@ variable "vpn_cidr" { }
 variable "ami" { }
 variable "instance_type" { }
 variable "key_name" { }
-variable "size" { }
 variable "subnet_ids" { type = "list" }
 variable "subnet_cidrs" { type = "list" default = [] }
 variable "policy_arn" { default = "" }
 variable "host_number" { default = 0 }
+variable "size" { }
 
-output "ips" {
+output "private_ips" {
   value = ["${aws_instance.host.*.private_ip}"]
 }
 
@@ -25,14 +25,14 @@ resource "aws_instance" "host" {
   instance_type = "${var.instance_type}"
   key_name = "${var.key_name}"
   subnet_id = "${element(var.subnet_ids, count.index)}"
-  private_ip = "${var.host_number != 0 ? cidrhost(element(var.subnet_cidrs, count.index), var.host_number) : ""}"
   vpc_security_group_ids = [
     "${aws_security_group.main.id}",
   ]
-  iam_instance_profile = "${aws_iam_instance_profile.main.name}"
   tags {
     Name = "${var.name}-${count.index}"
   }
+  private_ip = "${var.host_number != 0 ? cidrhost(element(var.subnet_cidrs, count.index), var.host_number) : ""}"
+  iam_instance_profile = "${aws_iam_instance_profile.main.name}"
 }
 
 ##

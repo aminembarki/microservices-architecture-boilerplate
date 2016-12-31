@@ -15,8 +15,10 @@ output "vpc_cidr" { value = "${var.vpc_cidr}" }
 output "vpn_cidr" { value = "${var.vpn_cidr}" }
 output "vpn_security_group_id" { value = "${module.vpn.security_group_id}" }
 output "vpn_public_ip" { value = "${module.vpn.public_ip}" }
-output "management_cluster_ips" { value = "${module.management_cluster.ips}" }
-output "compute_cluster_ips" { value = "${module.compute_cluster.ips}" }
+output "management_cluster_ips" { value = "${module.management-cluster.private_ips}" }
+output "compute_cluster_ips" { value = "${module.compute-cluster.private_ips}" }
+output "load_balancer_public_ip" { value = "${module.load-balancer.public_ip}"}
+output "load_balancer_private_ip" { value = "${module.load-balancer.private_ip}"}
 
 ##
 # Provide credentials for AWS from ~/.aws/credentials
@@ -66,7 +68,7 @@ module "vpn" {
 ##
 # Create a management cluster running Consul, Vault and Nomad.
 #
-module "management_cluster" {
+module "management-cluster" {
   source = "./terraform/aws/cluster"
   name = "${var.name}-management-cluster"
   ami = "${var.ami}"
@@ -85,7 +87,7 @@ module "management_cluster" {
 ##
 # Create a compute cluster to run jobs scheduled by the management cluster.
 #
-module "compute_cluster" {
+module "compute-cluster" {
   source = "./terraform/aws/cluster"
   name = "${var.name}-compute-cluster"
   ami = "${var.ami}"
@@ -97,6 +99,21 @@ module "compute_cluster" {
   subnet_ids = "${module.subnet.ids}"
   subnet_cidrs = "${var.subnet_cidrs}"
   size = "${length(var.subnet_cidrs)}"
+}
+
+##
+# Create an instance to host our load balancer (fabio)
+#
+module "load-balancer" {
+  source = "./terraform/aws/load-balancer"
+  name = "${var.name}-load-balancer"
+  ami = "${var.ami}"
+  instance_type = "t2.micro"
+  key_name = "${var.key_name}"
+  vpc_id = "${module.vpc.id}"
+  vpc_cidr = "${var.vpc_cidr}"
+  vpn_cidr = "${var.vpn_cidr}"
+  subnet_id = "${element(module.subnet.ids, 0)}"
 }
 
 ##

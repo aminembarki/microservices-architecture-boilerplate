@@ -8,6 +8,5 @@ install_dir: /usr/local/bin
 data_dir: /mnt/{{name}}
 config_dir: /etc/{{name}}.d
 
-# defined
-join_hosts: []
+# hosts is expected to be provided at command line via -e
 cluster_size: "{{hosts|length}}"

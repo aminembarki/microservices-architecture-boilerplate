@@ -1,0 +1,13 @@
+[Unit]
+Description={{name}} daemon
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User={{user}}
+Group={{group}}
+Restart=always
+ExecStart={{install_dir}}/{{name}}
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,30 @@
+- name: ensure binary is present
+  get_url:
+    url: "{{download_url}}"
+    dest: "{{install_dir}}/{{name}}"
+    mode: 0755
+
+- name: ensure user exists
+  user:
+    name: "{{user}}"
+
+- name: ensure service has been installed
+  template:
+    src: systemd.service.j2
+    dest: /etc/systemd/system/{{name}}.service
+
+- name: ensure service has been enabled/is running
+  systemd:
+    name: "{{name}}"
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: ensure requests to port 80 are redirected port 9999 (fabio)
+  iptables:
+    table: nat
+    chain: PREROUTING
+    protocol: tcp
+    destination_port: 80
+    jump: REDIRECT
+    to_ports: 9999

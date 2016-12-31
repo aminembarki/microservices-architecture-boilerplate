@@ -1,7 +1,7 @@
-job "test" {
+job "proxy" {
   datacenters = ["us-east-1"]
   type = "service"
-  task "proxy" {
+  task "test" {
     driver = "docker"
     config {
       image = "tkellen/test"
@@ -10,7 +10,16 @@ job "test" {
       }
     }
     service {
+      name = "goingslowly-proxy"
       port = "http"
+      tags = ["urlprefix-gs.loc/"]
+      check = {
+        type = "http"
+        name = "health"
+        path = "/"
+        interval = "5s"
+        timeout = "2s"
+      }
     }
     resources {
       network {
