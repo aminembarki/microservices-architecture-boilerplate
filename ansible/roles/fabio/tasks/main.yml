@@ -16,9 +16,9 @@
 - name: ensure service has been enabled/is running
   systemd:
     name: "{{name}}"
-    enabled: true
+    enabled: yes
     state: started
-    daemon_reload: true
+    daemon_reload: yes
 
 - name: ensure requests to port 80 are redirected port 9999 (fabio)
   iptables:

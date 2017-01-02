@@ -1,5 +1,5 @@
 # infrastructure
-> terraform, consul, vault, nomad, docker, fabio
+> terraform, consul, vault, nomad, docker, fabio, elasticsearch, logstash, kibana, elastalert
 
 ## Setup
 1. Install [AWSCLI], [Terraform], [Ansible] & [Tunnelblick].
@@ -14,18 +14,18 @@
 8. Disable SSH access to VPN: `bin/disable-vpn-ssh`
 9. Connect to VPN (using `vpn.ovpn`).
 10. Provision Management Cluster: `bin/provision-management-cluster`
+10. Provision Logging Cluster: `bin/provision-logging-cluster`
 11. Provision Compute Cluster: `bin/provision-compute-cluster`
 12. Provision Load Balancer: `bin/provision-load-balancer`
 13. Initialize Vault: `bin/initialize-vault` (save output securely)
 14. Unseal Vault (3x): `bin/unseal-vault <key>`
 
 ## To Do
+- Get log shipping system set up (elastic stack)
 - Confirm Fabio working for SSL
 - Hook up fabio certificate store for SSL termination
 - Get SSL communication going for Vault and Consul.
 - Get OpenVPN using Vault for PKI (aka ditch easy-rsa)
-- Test Nomad/Vault integration on jobs
-- Ditch Ansible for shell scripts integrated with Terraform?
 - Lock down consul a bit:
   - https://www.mauras.ch/securing-consul.html
 

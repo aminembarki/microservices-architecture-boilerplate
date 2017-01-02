@@ -11,12 +11,15 @@
       tags: dnsmasq
     - role: hostname
       tags: hostname
-      hostname: management-cluster-{{hostnumber}}
+      hostname: logging-cluster-{{hostnumber}}
     - role: consul
       tags: consul
-      agent_mode: server
-    - role: nomad
-      tags: nomad
-      agent_mode: server
-    - role: vault
-      tags: vault
+      agent_mode: client
+      hosts: "{{consul_hosts}}"
+    - role: elasticsearch
+      tags: elasticsearch
+  tasks:
+    - name: restart consul so it reads in all configs
+      systemd:
+        name: consul
+        state: restarted

@@ -1,13 +1,21 @@
 - hosts: all
-  gather_facts: false
+  gather_facts: no
   become: yes
   become_method: sudo
   roles:
-    - {role: base, tags: base}
-    - {role: dnsmasq, tags: dnsmasq, listen_on_eth0: true}
-    - {role: hostname, tags: hostname, hostname: vpn}
-    - {role: consul, tags: consul, agent_mode: client}
-    - {role: openvpn, tags: openvpn}
+    - role: base
+      tags: base
+    - role: dnsmasq
+      tags: dnsmasq
+      listen_on_eth0: yes
+    - role: hostname
+      tags: hostname
+      hostname: vpn
+    - role: consul
+      tags: consul
+      agent_mode: client
+    - role: openvpn
+      tags: openvpn
   handlers:
     - name: reload ufw
       ufw: state=reloaded

@@ -1,6 +1,6 @@
 #!/bin/bash
 
 ansible-playbook -u ubuntu \
-  -e "{\"hosts\":$(terraform output -json management_cluster_ips | jq -c '.value')}" \
+  -e "{\"consul_hosts\":$(terraform output -json management_cluster_ips | jq -c '.value')}" \
   -i $(terraform output management_cluster_ips | tr -d '\n'), \
   ansible/management_cluster.yml

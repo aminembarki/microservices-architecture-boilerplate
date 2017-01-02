@@ -2,7 +2,7 @@
   unarchive:
     src: "{{download_url}}"
     dest: "{{install_dir}}"
-    remote_src: true
+    remote_src: yes
   args:
     creates: "{{install_dir}}/{{name}}"
 
@@ -22,7 +22,7 @@
 
 - name: ensure eth0 ip is known
   setup:
-    
+
 - name: ensure configuration is in place
   template:
     src: "agent.json.j2"
@@ -38,6 +38,6 @@
 - name: ensure service has been enabled/is running
   systemd:
     name: "{{name}}"
-    enabled: true
+    enabled: yes
     state: started
-    daemon_reload: true
+    daemon_reload: yes

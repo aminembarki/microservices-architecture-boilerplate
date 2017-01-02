@@ -19,9 +19,6 @@ vpn_cidr = "10.110.0.0/16"
 # Default AMI (Ubuntu 16.04)
 ami = "ami-40d28157"
 
-# Default instance type
-instance_type = "t2.micro"
-
 # This is all of the availability zones we will create subnets for
 azs = [
   "us-east-1a",
@@ -41,3 +38,4 @@ subnet_cidrs = [
 # would yield instances running at 10.100.0.10, 10.100.1.10
 # and 10.100.2.10
 management_cluster_host_number = 10
+logging_cluster_host_number = 15

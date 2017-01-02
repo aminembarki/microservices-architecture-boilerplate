@@ -8,6 +8,7 @@ variable "key_name" { }
 variable "subnet_cidrs" { type = "list" }
 variable "vpn_cidr" { }
 variable "management_cluster_host_number" { }
+variable "logging_cluster_host_number" { }
 
 output "name" { value = "${var.name}" }
 output "domain" { value = "${var.domain}" }
@@ -17,6 +18,7 @@ output "vpn_security_group_id" { value = "${module.vpn.security_group_id}" }
 output "vpn_public_ip" { value = "${module.vpn.public_ip}" }
 output "management_cluster_ips" { value = "${module.management-cluster.private_ips}" }
 output "compute_cluster_ips" { value = "${module.compute-cluster.private_ips}" }
+output "logging_cluster_ips" { value = "${module.logging-cluster.private_ips}" }
 output "load_balancer_public_ip" { value = "${module.load-balancer.public_ip}"}
 output "load_balancer_private_ip" { value = "${module.load-balancer.private_ip}"}
 
@@ -72,6 +74,25 @@ module "management-cluster" {
   source = "./terraform/aws/cluster"
   name = "${var.name}-management-cluster"
   ami = "${var.ami}"
+  instance_type = "t2.small"
+  key_name = "${var.key_name}"
+  vpc_id = "${module.vpc.id}"
+  vpc_cidr = "${var.vpc_cidr}"
+  vpn_cidr = "${var.vpn_cidr}"
+  subnet_ids = "${module.subnet.ids}"
+  subnet_cidrs = "${var.subnet_cidrs}"
+  size = "${length(var.subnet_cidrs)}"
+  host_number = "${var.management_cluster_host_number}"
+  policy_arn = "${aws_iam_policy.vault.arn}"
+}
+
+##
+# Create a logging cluster to run elasicsearch/logstash/kibana.
+#
+module "logging-cluster" {
+  source = "./terraform/aws/cluster"
+  name = "${var.name}-logging-cluster"
+  ami = "${var.ami}"
   instance_type = "t2.micro"
   key_name = "${var.key_name}"
   vpc_id = "${module.vpc.id}"
@@ -79,9 +100,8 @@ module "management-cluster" {
   vpn_cidr = "${var.vpn_cidr}"
   subnet_ids = "${module.subnet.ids}"
   subnet_cidrs = "${var.subnet_cidrs}"
-  host_number = "${var.management_cluster_host_number}"
-  policy_arn = "${aws_iam_policy.vault.arn}"
   size = "${length(var.subnet_cidrs)}"
+  host_number = "${var.logging_cluster_host_number}"
 }
 
 ##

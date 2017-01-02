@@ -1,0 +1,59 @@
+- name: ensure machine statistics are known
+  setup:
+
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html
+- name: ensure memory swapping is disabled
+  sysctl:
+    name: vm.swappiness
+    value: 1
+    state: present
+
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+- name: ensure mmap limit is high enough
+  sysctl:
+    name: vm.max_map_count
+    value: 262144
+    state: present
+
+- name: ensure gpg key has been imported
+  apt_key:
+    url: https://packages.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: ensure repository has been added
+  apt_repository:
+    repo: "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main"
+    state: present
+
+- name: ensure package has been installed
+  apt:
+    name: elasticsearch
+    state: present
+    update_cache: yes
+
+- name: ensure configuration is present
+  template:
+    src: elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+
+- name: ensure memory configuration is present
+  template:
+    src: elasticsearch.j2
+    dest: /etc/default/elasticsearch
+
+- name: ensure jvm configuration is present
+  template:
+    src: jvm.options.j2
+    dest: /etc/elasticsearch/jvm.options
+
+- name: ensure service has been enabled/is running
+  systemd:
+    name: elasticsearch
+    enabled: yes
+    state: started
+    daemon_reload: yes
+
+- name: ensure service is registered with consul
+  template:
+    src: service.json.j2
+    dest: /etc/consul.d/elasticsearch.json

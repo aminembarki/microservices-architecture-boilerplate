@@ -2,8 +2,8 @@
 
 - name: ensure service is registered with consul
   template:
-    src: services.json
-    dest: /etc/consul.d
+    src: service.json.j2
+    dest: /etc/consul.d/openvpn.json
 
 - name: add keys to apt
   apt_key:
@@ -43,8 +43,8 @@
 
 - name: ensure easy-rsa vars have been configured
   template:
-    src: vars
-    dest: "{{ openvpn_path }}"
+    src: vars.j2
+    dest: "{{ openvpn_path }}/vars"
 
 - name: ensure public key infrastructure is in place
   command: ./easyrsa init-pki
@@ -102,14 +102,14 @@
   args:
     chdir: "{{ pki_path }}"
   register: hmac_key_contents
-  no_log: true
+  no_log: yes
 
 - name: register ca cert for use in ovpn configs
   command: cat ca.crt
   args:
     chdir: "{{ pki_path }}"
   register: ca_contents
-  no_log: true
+  no_log: yes
 
 - name: register signed client certs for use in ovpn configs
   command: cat {{ item.name }}.crt
@@ -118,7 +118,7 @@
   with_items: "{{ users }}"
   when: "{{ item.state == 'present' }}"
   register: client_certificates
-  no_log: true
+  no_log: yes
 
 - name: register client keys for use in ovpn configs
   command: cat {{ item.name }}.key
@@ -127,7 +127,7 @@
   with_items: "{{ users }}"
   when: "{{ item.state == 'present' }}"
   register: client_keys
-  no_log: true
+  no_log: yes
 
 - name: ensure client folders exists
   file:
@@ -144,14 +144,14 @@
     - "{{ client_certificates.results }}"
     - "{{ client_keys.results }}"
   when: "{{ item.0.state == 'present' }}"
-  no_log: true
-  
+  no_log: yes
+
 - name: ensure eth0 ip is known
   setup:
 
 - name: ensure openvpn is configured
   template:
-    src: server.conf
+    src: server.conf.j2
     dest: /etc/openvpn/server.conf
 
 - name: ensure openvpn has been restarted

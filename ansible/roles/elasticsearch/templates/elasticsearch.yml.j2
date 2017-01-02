@@ -1,0 +1,15 @@
+cluster.name: logging
+network.host:
+  - _local_
+  - {{ansible_eth0.ipv4.address}}
+node.name: elasticsearch-{{hostnumber}}
+discovery.zen.minimum_master_nodes: 2
+discovery.zen.ping.unicast.hosts: [
+{% for ip in es_hosts %}
+  "{{ip}}"{% if not loop.last %},{% endif %}
+
+{% endfor %}
+]
+
+# https://www.elastic.co/guide/en/elasticsearch/reference/current/_memory_lock_check.html
+bootstrap.mlockall: true

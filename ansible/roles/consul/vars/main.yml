@@ -8,5 +8,5 @@ install_dir: /usr/local/bin
 data_dir: /mnt/{{name}}
 config_dir: /etc/{{name}}.d
 
-# hosts is expected to be provided at command line via -e
-cluster_size: "{{hosts|length}}"
+# consul_hosts is expected to be provided at command line via -e
+cluster_size: "{{consul_hosts|length}}"

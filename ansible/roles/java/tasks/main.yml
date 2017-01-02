@@ -1,0 +1,16 @@
+- name: ensure apt repository has been added
+  apt_repository:
+    repo: ppa:webupd8team/java
+    state: present
+
+- name: ensure license has been accepted
+  debconf:
+    name: oracle-java8-installer
+    question: shared/accepted-oracle-license-v1-1
+    vtype: select
+    value: "true"
+
+- name: ensure package has been installed
+  apt:
+    name: oracle-java8-installer
+    state: present

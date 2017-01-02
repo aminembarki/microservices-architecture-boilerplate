@@ -5,7 +5,7 @@
   "bind_addr": "{{ansible_eth0.ipv4.address}}",
   "enable_syslog": true,
   "retry_join": [
-{% for ip in hosts if ip != ansible_eth0.ipv4.address %}
+{% for ip in consul_hosts if ip != ansible_eth0.ipv4.address %}
     "{{ip}}"{% if not loop.last %},{% endif %}
 
 {% endfor %}

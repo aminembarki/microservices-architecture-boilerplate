@@ -2,7 +2,7 @@
   apt:
     name: dnsmasq
     state: present
-    update_cache: true
+    update_cache: yes
 
 - name: ensure needed directories exist
   file:
@@ -26,9 +26,9 @@
 - name: ensure service has been enabled/is running
   systemd:
     name: dnsmasq
-    enabled: true
+    enabled: yes
     state: restarted
-    daemon_reload: true
+    daemon_reload: yes
 
 - name: ensure dnsmasq is used for resolving dns
   lineinfile:
