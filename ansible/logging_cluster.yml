@@ -18,6 +18,8 @@
       hosts: "{{consul_hosts}}"
     - role: elasticsearch
       tags: elasticsearch
+    - role: logstash
+      tags: logstash
   tasks:
     - name: restart consul so it reads in all configs
       systemd:

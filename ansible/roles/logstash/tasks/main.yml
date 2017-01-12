@@ -1,0 +1,16 @@
+- name: ensure package has been installed
+  apt:
+    name: logstash
+    state: present
+
+- name: ensure service has been enabled/is running
+  systemd:
+    name: logstash
+    enabled: yes
+    state: started
+    daemon_reload: yes
+
+- name: ensure service is registered with consul
+  template:
+    src: service.json.j2
+    dest: /etc/consul.d/logstash.json

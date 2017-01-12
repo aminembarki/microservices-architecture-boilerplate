@@ -1,24 +1,28 @@
 # infrastructure
-> terraform, consul, vault, nomad, docker, fabio, elasticsearch, logstash, kibana, elastalert
+> terraform, consul, vault, nomad, docker, fabio, elasticsearch, logstash, kibana, elastalert, pritunl
 
 ## Setup
-1. Install [AWSCLI], [Terraform], [Ansible] & [Tunnelblick].
+1. Install [AWSCLI], [Terraform], [Ansible] & [Pritunl].
 2. Log into EC2 console, create a key pair titled "default". Download
    the key and add to your ssh-agent: `ssh-add /path/to/key.pem`
 3. Ensure `~/.aws/credentials` has a profile with administrative
    access credentials that matches `name` in `terraform.tfvars`
 4. Provision your infrastructure: `terraform apply`
-5. Enable SSH access to VPN: `bin/enable-vpn-ssh`
+5. Enable public management of VPN: `bin/enable-vpn-ssh`
 6. Provision VPN: `bin/provision-vpn`
-7. Get VPN configuration: `bin/fetch-admin-ovpn > vpn.ovpn`
-8. Disable SSH access to VPN: `bin/disable-vpn-ssh`
-9. Connect to VPN (using `vpn.ovpn`).
-10. Provision Management Cluster: `bin/provision-management-cluster`
-10. Provision Logging Cluster: `bin/provision-logging-cluster`
-11. Provision Compute Cluster: `bin/provision-compute-cluster`
-12. Provision Load Balancer: `bin/provision-load-balancer`
-13. Initialize Vault: `bin/initialize-vault` (save output securely)
-14. Unseal Vault (3x): `bin/unseal-vault <key>`
+7. Configure VPN following this guide: https://docs.pritunl.com/docs/connecting
+   - Set your DNS server to the private IP of the VPN itself. This will allow
+     local developers to resolve &#42;.service.consul domains.
+   - Add a route matching your VPC CIDR (e.g. 10.100.10.0/16) so users connected
+     to the VPN can reach your nework.
+8. Disable public management of VPN: `bin/disable-vpn-ssh`
+10. Connect to VPN.
+11. Provision Management Cluster: `bin/provision-management-cluster`
+12. Provision Logging Cluster: `bin/provision-logging-cluster`
+13. Provision Compute Cluster: `bin/provision-compute-cluster`
+14. Provision Load Balancer: `bin/provision-load-balancer`
+15. Initialize Vault: `bin/initialize-vault` (save output securely)
+16. Unseal Vault (3x): `bin/unseal-vault <key>`
 
 ## To Do
 - Get log shipping system set up (elastic stack)
@@ -58,4 +62,4 @@
 [AWSCLI]: http://docs.aws.amazon.com/cli/latest/userguide/installing.html
 [Terraform]: https://www.terraform.io/downloads.html
 [Ansible]: http://docs.ansible.com/ansible/intro_installation.html#latest-releases-via-pip
-[Tunnelblick]: https://tunnelblick.net/downloads.html
+[Pritunl]: https://pritunl.com

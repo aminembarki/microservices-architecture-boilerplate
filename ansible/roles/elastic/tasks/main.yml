@@ -1,0 +1,13 @@
+- name: ensure gpg key has been imported
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: ensure repository has been added
+  apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
+    state: present
+
+- name: ensure apt cache has been updated
+  apt:
+    update_cache: yes

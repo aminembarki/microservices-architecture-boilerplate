@@ -15,16 +15,6 @@
     value: 262144
     state: present
 
-- name: ensure gpg key has been imported
-  apt_key:
-    url: https://packages.elastic.co/GPG-KEY-elasticsearch
-    state: present
-
-- name: ensure repository has been added
-  apt_repository:
-    repo: "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main"
-    state: present
-
 - name: ensure package has been installed
   apt:
     name: elasticsearch

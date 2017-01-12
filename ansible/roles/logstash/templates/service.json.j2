@@ -1,0 +1,13 @@
+{
+  "service": {
+    "id": "elasticsearch",
+    "name": "elasticsearch",
+    "checks": [
+      {
+        "http": "http://{{ansible_eth0.ipv4.address}}:9200",
+        "interval": "10s",
+        "timeout": "1s"
+      }
+    ]
+  }
+}

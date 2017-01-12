@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo Disabling port 22/443 on VPN...
+aws ec2 revoke-security-group-ingress \
+  --group-id $(terraform output vpn_security_group_id) \
+  --protocol tcp \
+  --port 22 \
+  --cidr 0.0.0.0/0 \
+  --profile $(terraform output name)
+
+aws ec2 revoke-security-group-ingress \
+  --group-id $(terraform output vpn_security_group_id) \
+  --protocol tcp \
+  --port 443 \
+  --cidr 0.0.0.0/0 \
+  --profile $(terraform output name)
+echo Done.

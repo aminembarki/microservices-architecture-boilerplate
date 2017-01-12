@@ -1,0 +1,39 @@
+- name: ensure service is registered with consul
+  template:
+    src: service.json.j2
+    dest: /etc/consul.d/vpn.json
+
+- name: add keys to apt
+  apt_key:
+    id: "{{item}}"
+    keyserver: hkp://keyserver.ubuntu.com
+    state: present
+  with_items:
+   - 42F3E95A2C4F08279C4960ADD68FA50FEA312927
+   - 7568D9BB55FF9E5287D586017AE645C0CF8E292A
+
+- name: add ppas to apt
+  apt_repository:
+    repo: "{{item}}"
+    state: present
+  with_items:
+    - deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse
+    - deb http://repo.pritunl.com/stable/apt xenial main
+
+- name: ensure apt packages are installed
+  apt:
+    name: "{{item}}"
+    state: latest
+    update_cache: yes
+  with_items:
+    - pritunl
+    - mongodb-org
+
+- name: ensure service has been enabled/is running
+  systemd:
+    name: pritunl
+    enabled: yes
+    state: started
+  with_items:
+    - pritunl
+    - mongod
