@@ -1,7 +1,6 @@
 variable "name" { }
 variable "domain" { }
 variable "aws_region" { }
-variable "ami" { }
 variable "vpc_cidr" { }
 variable "azs" { type = "list" }
 variable "key_name" { }
@@ -32,6 +31,23 @@ provider "aws" {
 }
 
 ##
+# Look up the latest AMI for Ubuntu 17
+#
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  filter {
+    name = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+  }
+  filter {
+    name = "virtualization-type"
+    values = ["hvm"]
+  }
+  # Canonical
+  owners = ["099720109477"]
+}
+
+##
 # Create the network for our entire infrastructure.
 #
 module "vpc" {
@@ -57,7 +73,7 @@ module "subnet" {
 module "vpn" {
   source = "./terraform/aws/vpn"
   name = "${var.name}-vpn"
-  ami = "${var.ami}"
+  ami = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
   key_name = "${var.key_name}"
   vpc_id = "${module.vpc.id}"
@@ -73,7 +89,7 @@ module "vpn" {
 module "management-cluster" {
   source = "./terraform/aws/cluster"
   name = "${var.name}-management-cluster"
-  ami = "${var.ami}"
+  ami = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.small"
   key_name = "${var.key_name}"
   vpc_id = "${module.vpc.id}"
@@ -92,7 +108,7 @@ module "management-cluster" {
 module "logging-cluster" {
   source = "./terraform/aws/cluster"
   name = "${var.name}-logging-cluster"
-  ami = "${var.ami}"
+  ami = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
   key_name = "${var.key_name}"
   vpc_id = "${module.vpc.id}"
@@ -110,7 +126,7 @@ module "logging-cluster" {
 module "compute-cluster" {
   source = "./terraform/aws/cluster"
   name = "${var.name}-compute-cluster"
-  ami = "${var.ami}"
+  ami = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
   key_name = "${var.key_name}"
   vpc_id = "${module.vpc.id}"
@@ -127,7 +143,7 @@ module "compute-cluster" {
 module "load-balancer" {
   source = "./terraform/aws/load-balancer"
   name = "${var.name}-load-balancer"
-  ami = "${var.ami}"
+  ami = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
   key_name = "${var.key_name}"
   vpc_id = "${module.vpc.id}"

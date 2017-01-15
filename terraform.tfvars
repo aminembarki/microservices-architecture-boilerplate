@@ -16,9 +16,6 @@ vpc_cidr = "10.100.0.0/16"
 # This is the network our OpenVPN instance will use.
 vpn_cidr = "10.110.0.0/16"
 
-# Default AMI (Ubuntu 16.04)
-ami = "ami-40d28157"
-
 # This is all of the availability zones we will create subnets for
 azs = [
   "us-east-1a",
