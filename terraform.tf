@@ -31,7 +31,7 @@ provider "aws" {
 }
 
 ##
-# Look up the latest AMI for Ubuntu 17
+# Look up the latest AMI for Ubuntu 16
 #
 data "aws_ami" "ubuntu" {
   most_recent = true
