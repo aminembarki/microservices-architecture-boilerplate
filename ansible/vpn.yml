@@ -3,19 +3,15 @@
   become: yes
   become_method: sudo
   roles:
-    - role: base
-      tags: base
-    - role: dnsmasq
-      tags: dnsmasq
-      listen_on_eth0: yes
-    - role: hostname
-      tags: hostname
-      hostname: vpn
+    #- role: base
+    #  tags: base
+    #- role: dnsmasq
+    #  tags: dnsmasq
+    #- role: hostname
+    #  tags: hostname
+    #  hostname: vpn
     - role: consul
       tags: consul
       agent_mode: client
-    - role: openvpn
-      tags: openvpn
-  handlers:
-    - name: reload ufw
-      ufw: state=reloaded
+    #- role: vpn
+    #  tags: vpn

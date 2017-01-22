@@ -2,7 +2,9 @@
   "server": {{'true' if agent_mode == 'server' else 'false'}},
   "datacenter": "{{datacenter}}",
   "data_dir": "{{data_dir}}",
-  "bind_addr": "{{ansible_eth0.ipv4.address}}",
+{%- raw %}
+  "bind_addr": "{{GetInterfaceIP \"eth0\"}}",
+{% endraw %}
   "enable_syslog": true,
   "retry_join": [
 {% for ip in consul_hosts if ip != ansible_eth0.ipv4.address %}

@@ -28,3 +28,30 @@
     destination_port: 80
     jump: REDIRECT
     to_ports: 9999
+
+- name: ensure high availability packages are needed
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  with_items:
+    - jq
+    - awscli
+
+- name: ensure high availability watch script is in place
+  template:
+    src: ha-assign-public-ip.j2
+    dest: "{{install_dir}}/ha-assign-public-ip"
+    mode: 0755
+
+- name: ensure consul watch is in place
+  template:
+    src: consul.json.j2
+    dest: /etc/consul.d/fabio.json
+    owner: consul
+    group: consul
+
+- name: ensure consul restarts
+  systemd:
+    name: consul
+    state: restarted

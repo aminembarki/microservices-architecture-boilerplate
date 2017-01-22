@@ -1,6 +1,0 @@
-#!/bin/bash
-
-ansible-playbook -u ubuntu \
-  -e "{\"consul_hosts\":$(terraform output -json management_cluster_ips | jq -c '.value')}" \
-  -i $(terraform output load_balancer_private_ip), \
-  ansible/load_balancer.yml

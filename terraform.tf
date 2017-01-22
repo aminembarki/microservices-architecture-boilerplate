@@ -6,6 +6,7 @@ variable "azs" { type = "list" }
 variable "key_name" { }
 variable "subnet_cidrs" { type = "list" }
 variable "vpn_cidr" { }
+variable "vpn_port" { }
 variable "management_cluster_host_number" { }
 variable "logging_cluster_host_number" { }
 
@@ -18,8 +19,7 @@ output "vpn_public_ip" { value = "${module.vpn.public_ip}" }
 output "management_cluster_ips" { value = "${module.management-cluster.private_ips}" }
 output "compute_cluster_ips" { value = "${module.compute-cluster.private_ips}" }
 output "logging_cluster_ips" { value = "${module.logging-cluster.private_ips}" }
-output "load_balancer_public_ip" { value = "${module.load-balancer.public_ip}"}
-output "load_balancer_private_ip" { value = "${module.load-balancer.private_ip}"}
+output "public_ip" { value = "${aws_eip.main.public_ip}"}
 
 ##
 # Provide credentials for AWS from ~/.aws/credentials
@@ -68,7 +68,7 @@ module "subnet" {
 }
 
 ##
-# Create OpenVPN box to give access to private network from the internet.
+# Create Pritunl box to give access to private network from the internet.
 #
 module "vpn" {
   source = "./terraform/aws/vpn"
@@ -80,11 +80,21 @@ module "vpn" {
   vpc_cidr = "${var.vpc_cidr}"
   subnet_id = "${element(module.subnet.ids, 1)}"
   cidr = "${var.vpn_cidr}"
+  port = "${var.vpn_port}"
   route_table_id = "${module.subnet.route_table_id}"
 }
 
 ##
-# Create a management cluster running Consul, Vault and Nomad.
+# Create a high availability management cluster running:
+#
+# Consul (Distributed KV Store / Service Discovery)
+# Nomad (Task Scheduler)
+# Vault (Secrets Management)
+# Fabio (Load Balancer)
+#
+# For large infrastructures it will makes sense to deploy
+# these as multiple clusters. They are combined here to
+# keep costs low.
 #
 module "management-cluster" {
   source = "./terraform/aws/cluster"
@@ -99,7 +109,12 @@ module "management-cluster" {
   subnet_cidrs = "${var.subnet_cidrs}"
   size = "${length(var.subnet_cidrs)}"
   host_number = "${var.management_cluster_host_number}"
-  policy_arn = "${aws_iam_policy.vault.arn}"
+  policy_arn = "${aws_iam_policy.management-cluster.arn}"
+}
+
+resource "aws_eip" "main" {
+  vpc = true
+  instance = "${element(module.management-cluster.ids, 0)}"
 }
 
 ##
@@ -138,25 +153,10 @@ module "compute-cluster" {
 }
 
 ##
-# Create an instance to host our load balancer (fabio)
+# Permissions needed for management cluster.
 #
-module "load-balancer" {
-  source = "./terraform/aws/load-balancer"
-  name = "${var.name}-load-balancer"
-  ami = "${data.aws_ami.ubuntu.id}"
-  instance_type = "t2.micro"
-  key_name = "${var.key_name}"
-  vpc_id = "${module.vpc.id}"
-  vpc_cidr = "${var.vpc_cidr}"
-  vpn_cidr = "${var.vpn_cidr}"
-  subnet_id = "${element(module.subnet.ids, 0)}"
-}
-
-##
-# A policy to give Vault IAM management access.
-#
-resource "aws_iam_policy" "vault" {
-  name = "${var.name}"
+resource "aws_iam_policy" "management-cluster" {
+  name = "${var.name}-management-cluster"
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -173,7 +173,10 @@ resource "aws_iam_policy" "vault" {
         "iam:DeleteAccessKey",
         "iam:DeleteUserPolicy",
         "iam:RemoveUserFromGroup",
-        "iam:DeleteUser"
+        "iam:DeleteUser",
+        "ec2:AssociateAddress",
+        "ec2:DisassociateAddress",
+        "ec2:DescribeInstances"
       ],
       "Resource": [
         "*"

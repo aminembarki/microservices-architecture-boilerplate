@@ -6,13 +6,13 @@
 variable "name" { }
 variable "vpc_id" { }
 variable "vpc_cidr" { }
-variable "ami" { default = "ami-40d28157" }
-variable "instance_type" { default = "t2.micro" }
-variable "key_name" { default = "default" }
+variable "ami" { }
+variable "instance_type" { }
+variable "key_name" { }
 variable "subnet_id" { }
 variable "route_table_id" { }
 variable "cidr" { }
-variable "port" { default = "636" }
+variable "port" { }
 
 output "id" { value = "${aws_instance.host.id}" }
 output "private_ip" { value = "${aws_instance.host.private_ip}" }
@@ -63,7 +63,7 @@ resource "aws_security_group" "main" {
   }
   // allow inbound vpn connections from anywhere
   ingress {
-    protocol = "tcp"
+    protocol = "udp"
     from_port = "${var.port}"
     to_port = "${var.port}"
     cidr_blocks = [

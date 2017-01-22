@@ -13,8 +13,11 @@ key_name = "default"
 # This is the network all of our services are hosted in.
 vpc_cidr = "10.100.0.0/16"
 
-# This is the network our OpenVPN instance will use.
+# This is the network our VPN will use.
 vpn_cidr = "10.110.0.0/16"
+
+# This is the UDP port we open for our VPN server.
+vpn_port = 44253
 
 # This is all of the availability zones we will create subnets for
 azs = [

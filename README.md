@@ -8,19 +8,18 @@
 3. Ensure `~/.aws/credentials` has a profile with administrative
    access credentials that matches `name` in `terraform.tfvars`
 4. Provision your infrastructure: `terraform apply`
-5. Enable public management of VPN: `bin/enable-vpn-ssh`
+5. Enable public management of VPN: `bin/enable-vpn-management`
 6. Provision VPN: `bin/provision-vpn`
 7. Configure VPN following this guide: https://docs.pritunl.com/docs/connecting
    - Set your DNS server to the private IP of the VPN itself. This will allow
      local developers to resolve &#42;.service.consul domains.
    - Add a route matching your VPC CIDR (e.g. 10.100.10.0/16) so users connected
-     to the VPN can reach your nework.
+     to the VPN can reach your network.
 8. Disable public management of VPN: `bin/disable-vpn-ssh`
 10. Connect to VPN.
 11. Provision Management Cluster: `bin/provision-management-cluster`
 12. Provision Logging Cluster: `bin/provision-logging-cluster`
 13. Provision Compute Cluster: `bin/provision-compute-cluster`
-14. Provision Load Balancer: `bin/provision-load-balancer`
 15. Initialize Vault: `bin/initialize-vault` (save output securely)
 16. Unseal Vault (3x): `bin/unseal-vault <key>`
 
@@ -32,6 +31,8 @@
 - Get OpenVPN using Vault for PKI (aka ditch easy-rsa)
 - Lock down consul a bit:
   - https://www.mauras.ch/securing-consul.html
+- Confirm that dnsmasq is the correct approach for integration with consul
+  - Specifically with regards to caching.
 
 ## Tests
 - Confirm Consul cluster is up by running `consul members` on any of the
@@ -58,6 +59,9 @@
      ctrl+]
      quit
      ```
+- confirm HA rollover for fabio by stopping fabio on any management cluster
+  instance and watching EIP association change
+
 
 [AWSCLI]: http://docs.aws.amazon.com/cli/latest/userguide/installing.html
 [Terraform]: https://www.terraform.io/downloads.html

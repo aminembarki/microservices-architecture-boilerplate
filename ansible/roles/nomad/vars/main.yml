@@ -1,5 +1,5 @@
 name: nomad
-version: 0.5.1
+version: 0.5.2
 download_url: https://releases.hashicorp.com/{{name}}/{{version}}/{{name}}_{{version}}_linux_amd64.zip
 
 user: "{{name}}"

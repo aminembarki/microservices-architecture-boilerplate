@@ -15,6 +15,10 @@ variable "policy_arn" { default = "" }
 variable "host_number" { default = 0 }
 variable "size" { }
 
+output "ids" {
+  value = ["${aws_instance.host.*.id}"]
+}
+
 output "private_ips" {
   value = ["${aws_instance.host.*.private_ip}"]
 }
@@ -26,7 +30,7 @@ resource "aws_instance" "host" {
   key_name = "${var.key_name}"
   subnet_id = "${element(var.subnet_ids, count.index)}"
   vpc_security_group_ids = [
-    "${aws_security_group.main.id}",
+    "${aws_security_group.main.id}"
   ]
   tags {
     Name = "${var.name}-${count.index}"
@@ -61,6 +65,24 @@ resource "aws_security_group" "main" {
     cidr_blocks = [
       "${var.vpc_cidr}",
       "${var.vpn_cidr}"
+    ]
+  }
+  // allow all inbound communication for http
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+  }
+  // allow all inbound communication for https
+  ingress {
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = [
+      "0.0.0.0/0"
     ]
   }
   lifecycle {
@@ -111,7 +133,7 @@ resource "aws_iam_role_policy_attachment" "main" {
 # Empty policy, applied when one outside the module isn't supplied.
 #
 resource "aws_iam_policy" "main" {
-  name = "${var.name}"
+  name = "${var.name}-default"
   path = "/"
   policy = <<EOF
 {

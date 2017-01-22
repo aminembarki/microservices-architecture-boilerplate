@@ -1,0 +1,15 @@
+{
+  "watches": [
+    {
+      "type": "service",
+      "service": "fabio",
+      {# we run fabio on every management cluster instance. if we lose any #}
+      {# hosts in the cluster we need to associate our public IP with one #}
+      {# which is still alive. we only want to execute this repair once. the #}
+      {# following handler accomplishes that by using a consul lock #}
+      {# TODO: finish confirming this actually works, the lock doesn't seem to #}
+      {# function properly. #}
+      "handler": "consul lock -try 1us load-balance-public-ip {{install_dir}}/ha-assign-public-ip"
+    }
+  ]
+}

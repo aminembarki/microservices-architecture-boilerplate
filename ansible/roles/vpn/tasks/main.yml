@@ -31,9 +31,23 @@
 
 - name: ensure service has been enabled/is running
   systemd:
-    name: pritunl
+    name: "{{item}}"
     enabled: yes
     state: started
   with_items:
     - pritunl
     - mongod
+
+- name: ensure setup key is known
+  shell: pritunl setup-key
+  register: setup_key
+
+- name: ensure pritunl has been initialized
+  uri:
+    url: https://{{inventory_hostname}}/setup/mongodb
+    method: PUT
+    validate_certs: no
+    body_format: json
+    body:
+      setup_key: "{{setup_key.stdout}}"
+      mongodb_uri: mongodb://localhost:27017/pritunl
