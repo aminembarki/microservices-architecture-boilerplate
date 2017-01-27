@@ -16,10 +16,11 @@ output "vpc_cidr" { value = "${var.vpc_cidr}" }
 output "vpn_cidr" { value = "${var.vpn_cidr}" }
 output "vpn_security_group_id" { value = "${module.vpn.security_group_id}" }
 output "vpn_public_ip" { value = "${module.vpn.public_ip}" }
+output "vpn_private_ip" { value = "${module.vpn.private_ip}" }
 output "management_cluster_ips" { value = "${module.management-cluster.private_ips}" }
 output "compute_cluster_ips" { value = "${module.compute-cluster.private_ips}" }
 output "logging_cluster_ips" { value = "${module.logging-cluster.private_ips}" }
-output "public_ip" { value = "${aws_eip.main.public_ip}"}
+output "load_balancer_public_ip" { value = "${aws_eip.main.public_ip}"}
 
 ##
 # Provide credentials for AWS from ~/.aws/credentials

@@ -3,6 +3,7 @@
     src: "{{download_url}}"
     dest: "{{install_dir}}"
     remote_src: yes
+    mode: 0755
   args:
     creates: "{{install_dir}}/{{name}}"
 

@@ -1,8 +1,6 @@
 #!/bin/bash
 
 ansible-playbook -u ubuntu \
-  -e cidr=`terraform output vpn_cidr` \
   -e "{\"consul_hosts\":$(terraform output -json management_cluster_ips | jq -c '.value')}" \
-  -e "{\"consul_hosts\":$(terraform output -json public_ip | jq -c '.value')}" \
   -i `terraform output vpn_public_ip`, \
   ansible/vpn.yml

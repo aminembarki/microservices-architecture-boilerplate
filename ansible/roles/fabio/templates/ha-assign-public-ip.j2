@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export AWS_DEFAULT_REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region') \
-IP={{public_ip}}
+export AWS_DEFAULT_REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
 
+# query consul to find the instance id of a live fabio node
 INSTANCE_ID=$(
   LEADER=$(dig +short fabio.service.consul | head -1)
   aws ec2 describe-instances \
@@ -11,10 +11,7 @@ INSTANCE_ID=$(
     --output text
 )
 
-# TODO: remove this test
-consul kv put update $(($(consul kv get update)+1))
-
-aws ec2 associate-address --public-ip $IP --instance-id $INSTANCE_ID
-
-# TODO: remove this when consul lock testing has concluded
-sleep 5
+# re-assign elastic ip to live fabio node
+aws ec2 associate-address
+  --public-ip {{load_balancer_public_ip}} \
+  --instance-id $INSTANCE_ID

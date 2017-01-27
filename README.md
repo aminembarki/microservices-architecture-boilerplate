@@ -11,8 +11,9 @@
 5. Enable public management of VPN: `bin/enable-vpn-management`
 6. Provision VPN: `bin/provision-vpn`
 7. Configure VPN following this guide: https://docs.pritunl.com/docs/connecting
-   - Set your DNS server to the private IP of the VPN itself. This will allow
-     local developers to resolve &#42;.service.consul domains.
+   - In order to resolve &#42;.service.consul domains while connected to the
+     VPN, use the pritunl server configuration modal to set the DNS to use
+     your management cluster nodes: `10.100.0.10, 10.100.1.10, 10.100.2.10`
    - Add a route matching your VPC CIDR (e.g. 10.100.10.0/16) so users connected
      to the VPN can reach your network.
 8. Disable public management of VPN: `bin/disable-vpn-ssh`
@@ -60,7 +61,7 @@
      quit
      ```
 - confirm HA rollover for fabio by stopping fabio on any management cluster
-  instance and watching EIP association change
+  instance and watching EIP association change in aws console
 
 
 [AWSCLI]: http://docs.aws.amazon.com/cli/latest/userguide/installing.html

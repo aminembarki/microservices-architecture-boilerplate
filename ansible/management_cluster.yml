@@ -7,8 +7,6 @@
   roles:
     - role: base
       tags: base
-    - role: awscli
-      tags: awscli
     - role: dnsmasq
       tags: dnsmasq
     - role: hostname

@@ -3,15 +3,15 @@
   become: yes
   become_method: sudo
   roles:
-    #- role: base
-    #  tags: base
-    #- role: dnsmasq
-    #  tags: dnsmasq
-    #- role: hostname
-    #  tags: hostname
-    #  hostname: vpn
+    - role: base
+      tags: base
+    - role: dnsmasq
+      tags: dnsmasq
+    - role: hostname
+      tags: hostname
+      hostname: vpn
     - role: consul
       tags: consul
       agent_mode: client
-    #- role: vpn
-    #  tags: vpn
+    - role: vpn
+      tags: vpn
