@@ -1,0 +1,3 @@
+#!/bin/bash
+
+open https://$(terraform output vpn_public_ip)

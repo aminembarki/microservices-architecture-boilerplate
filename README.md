@@ -1,28 +1,45 @@
-# infrastructure
-> terraform, consul, vault, nomad, docker, fabio, elasticsearch, logstash, kibana, elastalert, pritunl
+# modern-microservices-architecture-boilerplate
+> a foundational sea of complexity
+
+All the cool kids are making microservices these days and you want in too?
 
 ## Setup
 1. Install [AWSCLI], [Terraform], [Ansible] & [Pritunl].
-2. Log into EC2 console, create a key pair titled "default". Download
-   the key and add to your ssh-agent: `ssh-add /path/to/key.pem`
+2. Log into AWS EC2 console, create a key pair titled "default".
+   Download the key and add to your ssh-agent: `ssh-add /path/to/key.pem`
 3. Ensure `~/.aws/credentials` has a profile with administrative
-   access credentials that matches `name` in `terraform.tfvars`
+   access keys that match `name` in `terraform.tfvars`
 4. Provision your infrastructure: `terraform apply`
-5. Enable public management of VPN: `bin/enable-vpn-management`
-6. Provision VPN: `bin/provision-vpn`
-7. Configure VPN following this guide: https://docs.pritunl.com/docs/connecting
-   - In order to resolve &#42;.service.consul domains while connected to the
-     VPN, use the pritunl server configuration modal to set the DNS to use
-     your management cluster nodes: `10.100.0.10, 10.100.1.10, 10.100.2.10`
-   - Add a route matching your VPC CIDR (e.g. 10.100.10.0/16) so users connected
-     to the VPN can reach your network.
-8. Disable public management of VPN: `bin/disable-vpn-ssh`
-10. Connect to VPN.
-11. Provision Management Cluster: `bin/provision-management-cluster`
-12. Provision Logging Cluster: `bin/provision-logging-cluster`
-13. Provision Compute Cluster: `bin/provision-compute-cluster`
-15. Initialize Vault: `bin/initialize-vault` (save output securely)
-16. Unseal Vault (3x): `bin/unseal-vault <key>`
+5. Copy the private ip of the VPN in the final terraform output
+6. Enable public management of VPN: `bin/enable-vpn-management`
+7. Provision VPN: `bin/provision-vpn`
+8. Set up VPN: `bin/manage-vpn` ([pritunl docs]) # TODO: automate using API?
+   * Accept the invalid SSL certificate warning in browser
+   * Log in as pritunl/pritunl
+   * Set new administrative user/password
+   * Click users in top nav
+     * Click add organization and fill out form
+     * Click add user and fill out form
+   * Click servers in top nav
+     * Click add server and fill out form
+         * Set VPN port to match `vpn_port` in `terraform.tfvars`
+         * Set Virtual Network to match `vpn_cidr` in `terraform.tfvars`
+         * Set DNS to the private IP of the VPN (paste from step #5).
+           This will give connected operators and developers the ability
+           to resolve `&#42;.service.consul` domains.
+     * Click add route and enter the `vpc_cidr` from `terraform.tfvars`
+     * Click attach organization
+     * Click start server
+   * Click users in top nav
+   * Click chain icon next to your user for "temporary profile links"
+   * Copy "Temporary uri link for Pritunl Client"
+9. Open Pritunl client, import profile and connect
+10. Disable public management of VPN: `bin/disable-vpn-ssh`
+11. Provision management cluster: `bin/provision-management-cluster`
+12. Provision logging cluster: `bin/provision-logging-cluster`
+13. Provision compute cluster: `bin/provision-compute-cluster`
+15. Initialize vault: `bin/initialize-vault` (save output securely)
+16. Unseal vault (3x): `bin/unseal-vault <key>`
 
 ## To Do
 - Get log shipping system set up (elastic stack)
@@ -63,8 +80,43 @@
 - confirm HA rollover for fabio by stopping fabio on any management cluster
   instance and watching EIP association change in aws console
 
+## Technologies used
+
+#### AWS
+High level explainer to follow.
+
+#### Terraform
+High level explainer to follow.
+
+### Ansible
+High level explainer to follow.
+
+#### Pritunl
+High level explainer to follow.
+
+#### Consul
+High level explainer to follow.
+
+#### Vault
+High level explainer to follow.
+
+#### Nomad
+High level explainer to follow.
+
+#### Docker
+High level explainer to follow.
+
+#### Fabio
+High level explainer to follow.
+
+### Elasticsearch
+High level explainer to follow.
+
+### Kibana
+High level explainer to follow.
 
 [AWSCLI]: http://docs.aws.amazon.com/cli/latest/userguide/installing.html
 [Terraform]: https://www.terraform.io/downloads.html
 [Ansible]: http://docs.ansible.com/ansible/intro_installation.html#latest-releases-via-pip
 [Pritunl]: https://pritunl.com
+[pritunl docs]: https://docs.pritunl.com/docs/connecting

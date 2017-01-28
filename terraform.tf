@@ -20,7 +20,7 @@ output "vpn_private_ip" { value = "${module.vpn.private_ip}" }
 output "management_cluster_ips" { value = "${module.management-cluster.private_ips}" }
 output "compute_cluster_ips" { value = "${module.compute-cluster.private_ips}" }
 output "logging_cluster_ips" { value = "${module.logging-cluster.private_ips}" }
-output "load_balancer_public_ip" { value = "${aws_eip.main.public_ip}"}
+output "load_balancer_public_ip" { value = "${aws_eip.load-balancer.public_ip}"}
 
 ##
 # Provide credentials for AWS from ~/.aws/credentials
@@ -69,7 +69,7 @@ module "subnet" {
 }
 
 ##
-# Create Pritunl box to give access to private network from the internet.
+# Create Pritunl VPN to give access to private network from the internet.
 #
 module "vpn" {
   source = "./terraform/aws/vpn"
@@ -94,8 +94,8 @@ module "vpn" {
 # Fabio (Load Balancer)
 #
 # For large infrastructures it will makes sense to deploy
-# these as multiple clusters. They are combined here to
-# keep costs low.
+# these as multiple clusters, both for resiliance and for
+# security. They are combined here to keep costs low.
 #
 module "management-cluster" {
   source = "./terraform/aws/cluster"
@@ -113,7 +113,14 @@ module "management-cluster" {
   policy_arn = "${aws_iam_policy.management-cluster.arn}"
 }
 
-resource "aws_eip" "main" {
+##
+# Create public IP for load balancer. This will be assigned to
+# the first management cluster instance. Consul is configured
+# such that if any management host dies, this "floating" IP will
+# be transferred to a healthy node. All domains using this
+# infrastructure should point to this IP.
+#
+resource "aws_eip" "load-balancer" {
   vpc = true
   instance = "${element(module.management-cluster.ids, 0)}"
 }

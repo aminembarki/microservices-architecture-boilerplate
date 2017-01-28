@@ -7,6 +7,7 @@
       tags: base
     - role: dnsmasq
       tags: dnsmasq
+      listen_on_eth0: true
     - role: hostname
       tags: hostname
       hostname: vpn
