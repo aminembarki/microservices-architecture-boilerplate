@@ -28,6 +28,7 @@ All the cool kids are making microservices these days and you want in too?
            This will give connected operators and developers the ability
            to resolve `&#42;.service.consul` domains.
      * Click add route and enter the `vpc_cidr` from `terraform.tfvars`
+     * Click remove route for `0.0.0.0/0` (makes vpn a [split tunnel])
      * Click attach organization
      * Click start server
    * Click users in top nav
@@ -46,7 +47,6 @@ All the cool kids are making microservices these days and you want in too?
 - Confirm Fabio working for SSL
 - Hook up fabio certificate store for SSL termination
 - Get SSL communication going for Vault and Consul.
-- Get OpenVPN using Vault for PKI (aka ditch easy-rsa)
 - Lock down consul a bit:
   - https://www.mauras.ch/securing-consul.html
 - Confirm that dnsmasq is the correct approach for integration with consul
@@ -120,3 +120,4 @@ High level explainer to follow.
 [Ansible]: http://docs.ansible.com/ansible/intro_installation.html#latest-releases-via-pip
 [Pritunl]: https://pritunl.com
 [pritunl docs]: https://docs.pritunl.com/docs/connecting
+[split tunnel]: https://en.wikipedia.org/wiki/Split_tunneling
