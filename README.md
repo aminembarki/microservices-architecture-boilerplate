@@ -35,12 +35,12 @@ All the cool kids are making microservices these days and you want in too?
    * Click chain icon next to your user for "temporary profile links"
    * Copy "Temporary uri link for Pritunl Client"
 9. Open Pritunl client, import profile and connect
-10. Disable public management of VPN: `bin/disable-vpn-ssh`
+10. Disable public management of VPN: `bin/disable-vpn-management`
 11. Provision management cluster: `bin/provision-management-cluster`
 12. Provision logging cluster: `bin/provision-logging-cluster`
 13. Provision compute cluster: `bin/provision-compute-cluster`
-15. Initialize vault: `bin/initialize-vault` (save output securely)
-16. Unseal vault (3x): `bin/unseal-vault <key>`
+14. Initialize vault: `bin/initialize-vault` (save output securely)
+15. Unseal vault (3x): `bin/unseal-vault <key>`
 
 ## To Do
 - Get log shipping system set up (elastic stack)
