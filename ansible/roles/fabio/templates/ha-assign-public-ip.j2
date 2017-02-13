@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set +x
+
 export AWS_DEFAULT_REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
 
 # query consul to find the instance id of a live fabio node
@@ -12,6 +14,6 @@ INSTANCE_ID=$(
 )
 
 # re-assign elastic ip to live fabio node
-aws ec2 associate-address
+aws ec2 associate-address \
   --public-ip {{load_balancer_public_ip}} \
   --instance-id $INSTANCE_ID
