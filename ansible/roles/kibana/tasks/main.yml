@@ -1,0 +1,22 @@
+- name: ensure package has been installed
+  apt:
+    name: kibana
+    state: present
+    update_cache: yes
+
+- name: ensure configuration is present
+  template:
+    src: kibana.yml.j2
+    dest: /etc/kibana/kibana.yml
+
+- name: ensure service has been enabled/is running
+  systemd:
+    name: kibana
+    enabled: yes
+    state: started
+    daemon_reload: yes
+
+- name: ensure service is registered with consul
+  template:
+    src: service.json.j2
+    dest: /etc/consul.d/kibana.json

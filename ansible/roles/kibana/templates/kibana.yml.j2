@@ -1,0 +1,6 @@
+server.host: "{{ansible_eth0.ipv4.address}}"
+server.name: "kibana"
+elasticsearch.url: "http://elasticsearch.service.consul:9200"
+#elasticsearch.preserveHost: true
+# Specifies the path where Kibana creates the process ID file.
+#pid.file: /var/run/kibana.pid

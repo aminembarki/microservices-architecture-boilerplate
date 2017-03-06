@@ -1,0 +1,13 @@
+{
+  "service": {
+    "id": "kibana",
+    "name": "kibana",
+    "checks": [
+      {
+        "http": "http://{{ansible_eth0.ipv4.address}}:5601",
+        "interval": "10s",
+        "timeout": "1s"
+      }
+    ]
+  }
+}
