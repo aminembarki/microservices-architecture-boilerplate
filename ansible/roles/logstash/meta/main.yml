@@ -1,5 +1,0 @@
-dependencies:
-  - role: elastic
-    tags: elastic
-  - role: java
-    tags: java
