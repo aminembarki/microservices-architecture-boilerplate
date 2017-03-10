@@ -126,7 +126,7 @@ resource "aws_eip" "load-balancer" {
 }
 
 ##
-# Create a logging cluster to run elasicsearch/logstash/kibana.
+# Create a logging cluster to run elasicsearch/kibana.
 #
 module "logging-cluster" {
   source = "./terraform/aws/cluster"
